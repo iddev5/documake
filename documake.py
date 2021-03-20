@@ -1,3 +1,8 @@
+#!/usr/bin/python3
+# Copyright 2021 Ayush Bardhan Tripathy
+# This software is licensed under MIT License.
+# See LICENSE.md for more details.
+
 import os, sys;
 import yaml;
 
@@ -76,7 +81,6 @@ def main():
     doc = None;
     with open(sys.argv[1]) as f:
         doc = yaml.load(f, yaml.FullLoader);
-        print(doc);
 
     with open(sys.argv[2], "w") as f:
         out = parsefile(doc); 
