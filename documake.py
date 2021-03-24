@@ -22,31 +22,24 @@ def parsemember(doc, name):
         prop1 = getprop(doc, "name");
         prop2 = getprop(doc, "value");
         out = "   {}, {}\n".format(prop1, prop2);
-    return out, len(prop1), len(prop2) if type(prop2) is not int else 1;
+    return out;
 
 def decltype(name):
-    decls = {"function": "Parameter", "struct": "Member", "enum": "Enum"}
+    decls = {"function": "Parameter", "struct": "Member", "enum": "Value"}
     return decls[name];
 
 def parsedecl(doc, name):
-    id_ = ":{}:`{}` {} {}".format(name, name[0], getprop(doc, "id"), "( )" if name == "function" else "");
+    id_ = ":{}:`{}` {} {}".format(name, name, getprop(doc, "id"), "( )" if name == "function" else "");
     out  = "{}\n{}\n".format(id_, "=" * len(id_));
     out += "{}\n\n".format(getprop(doc, "name"));
     out += "Description\n{}\n{}\n".format("-" * len("Description"), getprop(doc, "desc"));
     out += "{}s\n{}\n\n".format(decltype(name), "-" * (len(decltype(name)) + 1));
     out += ".. csv-table::\n";
-    out += "   :widths: $$width$$, $$height$$\n\n";
+    out += "   :widths: auto\n\n"; 
     
-    lenmax1 = lenmax2 = 0;
     for _, comp in getprop(doc, "comp").items():
-        (outstr, len1, len2) = parsemember(comp, name);
-        out += outstr;
-        lenmax1 = max(len1, lenmax1);
-        lenmax2 = max(len2, lenmax2);
+        out += parsemember(comp, name);
 
-    out = out.replace("$$width$$", str(lenmax1), 1);
-    out = out.replace("$$height$$", str(lenmax2), 1);
-    
     out += "\n\n----\n\n";
     return out;
 
