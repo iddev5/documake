@@ -32,7 +32,7 @@ def parsedecl(doc, name):
     id_ = ":{}:`{}` {} {}".format(name, name, getprop(doc, "id"), "( )" if name == "function" else "");
     out  = "{}\n{}\n".format(id_, "=" * len(id_));
     out += "{}\n\n".format(getprop(doc, "name"));
-    out += "Description\n{}\n{}\n".format("-" * len("Description"), getprop(doc, "desc"));
+    out += "Description\n{}\n{}\n\n".format("-" * len("Description"), getprop(doc, "desc"));
     out += "{}s\n{}\n\n".format(decltype(name), "-" * (len(decltype(name)) + 1));
     out += ".. csv-table::\n";
     out += "   :widths: auto\n\n"; 
@@ -52,7 +52,6 @@ def parsefile(doc):
 
     out += ".. raw:: html\n\n";
     out += "   <style>\n";
-
     for k, v in color.items():
         out += "     .{} {{ color: {}; font-style: italic; }}\n".format(k, v);
     out += "   </style>\n\n";
@@ -70,14 +69,29 @@ def parsefile(doc):
 
     return out;
 
+def usage():
+    print("usage: documake <input.yml> <output.rst>");
+
 def main():
+    if len(sys.argv) == 2:
+        input_file = sys.argv[1];
+        output_file = "out.rst";
+    elif len(sys.argv) == 3:
+        input_file = sys.argv[1];
+        output_file = sys.argv[2];
+    else: 
+        usage();
+        return;
+
     doc = None;
-    with open(sys.argv[1]) as f:
+    with open(input_file) as f:
         doc = yaml.load(f, yaml.FullLoader);
 
-    with open(sys.argv[2], "w") as f:
+    with open(output_file, "w") as f:
         out = parsefile(doc); 
         f.write(out);
+
+    print("Generated output reST file: {} from input: {}".format(output_file, input_file))
 
 if __name__ == "__main__":
     main();
